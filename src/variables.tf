@@ -28,18 +28,51 @@ variable "vpc_name" {
   description = "VPC network & subnet name"
 }
 
-
-###ssh vars
-
-variable "vms_ssh_root_key" {
+variable "vm_web_image" {
   type        = string
-  default     = var.vms_ssh_root_key
-  description = "ssh-keygen -t ed25519"
+  default     = "ubuntu-2004-lts"
+  description = "ubuntu-2004 image for vm"
 }
 
-
-variable "vms_ssh_public_root_key" {
+variable "vm_web_platform_name" {
   type        = string
-  default     = var.vms_ssh_public_root_key
-  description = "ssh-keygen -t ed25519"
+  default     = "netology-develop-platform-web"
+  description = "name for web platform"
+}
+
+variable "vm_web_platform_id" {
+  type        = string
+  default     = "standard-v1"
+  description = "platform id"
+}
+
+variable "vm_web_cores" {
+  type        = number
+  default     = 2
+  description = "web cores number"
+}
+
+variable "vm_web_memory" {
+  type        = number
+  default     = 1
+  description = "web memory number"
+}
+
+variable "vm_web_core_fraction" {
+  type        = number
+  default     = 5
+  description = "% of efficency cores"
+}
+
+variable "avms_ssh_root_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "vms_resources" {
+  type      = map
+}
+
+variable "vms_metadata" {
+  type = map
 }
