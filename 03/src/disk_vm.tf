@@ -14,21 +14,20 @@ resource "yandex_compute_disk" "default" {
 
 resource "yandex_compute_instance" "storage" {
   depends_on  = [yandex_compute_disk.default]
-  name        = "storage"
+  name        = local.vm_storage.vm_name
   platform_id = "standard-v1"
   zone        = "ru-central1-a"
-  # for_each    = toset(yandex_compute_disk.default.*.id)
  
-
   resources {
-    cores  = 2
-    memory = 1
-    core_fraction = 5
+    cores         = local.vm_storage.cpu
+    memory        = local.vm_storage.ram
+    core_fraction = local.vm_storage.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
+      size     = local.vm_storage.disk_volume
     }
   }
 
@@ -43,15 +42,11 @@ resource "yandex_compute_instance" "storage" {
 
     subnet_id          = yandex_vpc_subnet.develop.id
     nat                = true
-    security_group_ids = (var.security_id)
+    security_group_ids = [data.yandex_vpc_security_group.group1.security_group_id]
   }
   scheduling_policy {
         preemptible = true
   }
   
-  metadata = {
-    serial-port-enable = 1
-    ssh-keys = "ubuntu:${file("~/tries.pub")}"
-    
-  }
+  metadata = local.vm_metadata
 }

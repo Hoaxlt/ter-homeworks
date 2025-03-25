@@ -41,13 +41,14 @@ variable "vm_web_image" {
 
 
 variable "each_vm" {
-  type    = list(object({  vm_name=string, cpu=number, ram=number, disk_volume=number }))
+  type    = list(object({  vm_name=string, cpu=number, ram=number, disk_volume=number, core_fraction=number }))
   default = [
               {
               vm_name = "main"
               cpu = 2
               ram = 1
               disk_volume = 10
+              core_fraction = 5
               },
               
               
@@ -56,6 +57,7 @@ variable "each_vm" {
                 cpu = 2 
                 ram = 2
                 disk_volume = 10
+                core_fraction = 5
               }
   ]
 }

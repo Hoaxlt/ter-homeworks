@@ -5,30 +5,27 @@ resource "yandex_compute_instance" "db" {
     zone        = "ru-central1-a"
 
   resources {
-    cores  = each.value.cpu
-    memory = each.value.ram
-    core_fraction = 5
+    cores         = each.value.cpu
+    memory        = each.value.ram
+    core_fraction = each.value.core_fraction
   }
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu.image_id
-      size = each.value.disk_volume
+      image_id    = data.yandex_compute_image.ubuntu.image_id
+      size        = each.value.disk_volume
     }
   }
   network_interface {
 
     subnet_id          = yandex_vpc_subnet.develop.id
     nat                = true
-    security_group_ids = (var.security_id)
+    security_group_ids = [data.yandex_vpc_security_group.group1.security_group_id]
   }
   
     scheduling_policy {
         preemptible = true
   }
-  metadata = {
-    serial-port-enable = 1
-    ssh-keys = "ubuntu:${file("~/tries.pub")}"
-  }
+  metadata = local.vm_metadata
 }
 
