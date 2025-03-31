@@ -41,10 +41,11 @@ variable "vm_web_image" {
 
 
 variable "each_vm" {
-  type    = list(object({  vm_name=string, cpu=number, ram=number, disk_volume=number, core_fraction=number }))
+  type    = list(object({  vm_name=string, zone=string, cpu=number, ram=number, disk_volume=number, core_fraction=number }))
   default = [
               {
               vm_name = "main"
+              zone = "ru-central1-a"
               cpu = 2
               ram = 1
               disk_volume = 10
@@ -54,6 +55,7 @@ variable "each_vm" {
               
               {
                 vm_name = "replica"
+                zone = "ru-central1-a"
                 cpu = 2 
                 ram = 2
                 disk_volume = 10
@@ -61,3 +63,15 @@ variable "each_vm" {
               }
   ]
 }
+
+
+variable "vm_storage" {
+  type  = object({ vm_name=string, zone=string, cpu=number, ram=number, disk_volume=number, core_fraction=number})
+
+}
+
+variable "vm_webservers" {
+  type  = object({ zone=string, cpu=number, ram=number, disk_volume=number, core_fraction=number})
+
+}
+

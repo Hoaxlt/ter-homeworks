@@ -14,20 +14,20 @@ resource "yandex_compute_disk" "default" {
 
 resource "yandex_compute_instance" "storage" {
   depends_on  = [yandex_compute_disk.default]
-  name        = local.vm_storage.vm_name
+  name        = var.vm_storage.vm_name
   platform_id = "standard-v1"
-  zone        = "ru-central1-a"
+  zone        = var.vm_storage.zone
  
   resources {
-    cores         = local.vm_storage.cpu
-    memory        = local.vm_storage.ram
-    core_fraction = local.vm_storage.core_fraction
+    cores         = var.vm_storage.cpu
+    memory        = var.vm_storage.ram
+    core_fraction = var.vm_storage.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      size     = local.vm_storage.disk_volume
+      size     = var.vm_storage.disk_volume
     }
   }
 

@@ -3,7 +3,7 @@ data "yandex_compute_image" "ubuntu" {
 }
 
 data "yandex_vpc_security_group" "group1" {
-  security_group_id = "enpsdki7s3nqsg9qf34f"
+  security_group_id = yandex_vpc_security_group.example.name
 }
 
 
@@ -14,18 +14,18 @@ resource "yandex_compute_instance" "webservers" {
     count = 2
     name        = "web-${count.index + 1}"
     platform_id = "standard-v1"
-    zone        = "ru-central1-a"
+    zone        = var.vm_webservers.zone
 
   resources {
-    cores         = local.vm_webservers.cpu
-    memory        = local.vm_webservers.ram
-    core_fraction = local.vm_webservers.core_fraction
+    cores         = var.vm_webservers.cpu
+    memory        = var.vm_webservers.ram
+    core_fraction = var.vm_webservers.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      size     = local.vm_webservers.disk_volume
+      size     = var.vm_webservers.disk_volume 
     }
   }
   network_interface {

@@ -1,42 +1,6 @@
 locals {
-each_vm = [
-    {
-    vm_name = "main"
-    cpu = 2
-    ram = 1
-    core_fraction = 5
-    disk_volume = 10
-    },        
-    {
-    vm_name = "replica"
-    cpu = 2
-    ram = 2
-    core_fraction = 5
-    disk_volume = 10
-    }
-  ]
-
-  vm_metadata = {
+   vm_metadata = {
     serial-port-enable = 1
     ssh-keys = "ubuntu:${file("~/tries.pub")}"
   }
-
-  vm_storage = {
-    vm_name = "storage"
-    cpu = 2
-    ram = 1
-    disk_volume = 10
-    core_fraction = 5 
-    }
-  
-
-  vm_webservers = {
-    cpu = 2
-    ram = 1
-    disk_volume = 10
-    core_fraction = 5 
-    }
-  
-
 }
-
