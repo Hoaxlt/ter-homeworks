@@ -1,13 +1,13 @@
 resource "yandex_compute_disk" "default" {
-    count  = 3
+    count  = var.virtual_disk.count
   name     = "disk-${count.index + 1}"
-  type     = "network-hdd"
-  size     = 1
-  zone     = "ru-central1-a"
+  type     = var.virtual_disk.type
+  size     = var.virtual_disk.size
+  zone     = var.virtual_disk.zone
  
 
   labels = {
-    environment = "test"
+    environment = var.virtual_disk.environment
   }
 }
 
@@ -15,7 +15,7 @@ resource "yandex_compute_disk" "default" {
 resource "yandex_compute_instance" "storage" {
   depends_on  = [yandex_compute_disk.default]
   name        = var.vm_storage.vm_name
-  platform_id = "standard-v1"
+  platform_id = var.vm_storage.platform_id
   zone        = var.vm_storage.zone
  
   resources {

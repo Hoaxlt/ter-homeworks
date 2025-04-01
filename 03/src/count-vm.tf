@@ -11,9 +11,9 @@ data "yandex_vpc_security_group" "group1" {
 
 resource "yandex_compute_instance" "webservers" {
     depends_on = [resource.yandex_compute_instance.db]
-    count = 2
+    count       = var.vm_webservers.count
     name        = "web-${count.index + 1}"
-    platform_id = "standard-v1"
+    platform_id = var.vm_webservers.platform_id
     zone        = var.vm_webservers.zone
 
   resources {

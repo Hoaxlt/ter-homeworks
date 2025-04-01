@@ -1,6 +1,7 @@
 each_vm = [
     {
     vm_name = "main"
+    platform_id = "standard-v1"
     zone = "ru-central1-a"
     cpu = 2
     ram = 1
@@ -9,6 +10,7 @@ each_vm = [
     },        
     {
     vm_name = "replica"
+    platform_id = "standard-v1"
     zone = "ru-central1-a"
     cpu = 2
     ram = 2
@@ -24,6 +26,7 @@ each_vm = [
 
   vm_storage = {
     vm_name = "storage"
+    platform_id = "standard-v1"
     zone = "ru-central1-a"
     cpu = 2
     ram = 1
@@ -33,11 +36,21 @@ each_vm = [
   
 
   vm_webservers = {
+    count = 2
+    platform_id = "standard-v1"
     zone = "ru-central1-a"
     cpu = 2
     ram = 1
     disk_volume = 10
     core_fraction = 5 
+    }
+
+    virtual_disk = {
+      count = 3
+      type = "network-hdd"
+      size = 1
+      zone = "ru-central1-a"
+      environment = "test"
     }
   
 
