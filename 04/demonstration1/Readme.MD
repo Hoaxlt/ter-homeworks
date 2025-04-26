@@ -19,7 +19,7 @@
 Выведите список ресурсов в стейте.
 Полностью удалите из стейта модуль vpc.
 Полностью удалите из стейта модуль vm
-![](https://github.com/Hoaxlt/ter-homeworks/blob/04/04/demonstration1/Screenshot_7.png
+![](https://github.com/Hoaxlt/ter-homeworks/blob/04/04/demonstration1/Screenshot_7.png)
 
 Импортируйте всё обратно. Проверьте terraform plan. Значимых(!!) изменений быть не должно. Приложите список выполненных команд и скриншоты процессы.    
 ![](https://github.com/Hoaxlt/ter-homeworks/blob/04/04/demonstration1/Screenshot_8.png)
