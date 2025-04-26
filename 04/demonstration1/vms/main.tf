@@ -1,38 +1,47 @@
 #создаем облачную сеть
-resource "yandex_vpc_network" "develop" {
-  name = "develop"
-}
+# resource "yandex_vpc_network" "develop" {
+#   name = "develop"
+# }
 
-#создаем подсеть
-resource "yandex_vpc_subnet" "develop_a" {
-  name           = "develop-ru-central1-a"
-  zone           = "ru-central1-a"
-  network_id     = yandex_vpc_network.develop.id
+# #создаем подсеть
+# resource "yandex_vpc_subnet" "develop_a" {
+#   name           = "develop-ru-central1-a"
+#   zone           = "ru-central1-a"
+#   network_id     = yandex_vpc_network.develop.id
+#   v4_cidr_blocks = ["10.0.1.0/24"]
+# }
+
+# resource "yandex_vpc_subnet" "develop_b" {
+#   name           = "develop-ru-central1-b"
+#   zone           = "ru-central1-b"
+#   network_id     = yandex_vpc_network.develop.id
+#   v4_cidr_blocks = ["10.0.2.0/24"]
+# }
+module "vpc_dev" {
+  source       = "./vpc"
+  env_name     = "develop"
+  zone = "ru-central1-a"
   v4_cidr_blocks = ["10.0.1.0/24"]
 }
 
-resource "yandex_vpc_subnet" "develop_b" {
-  name           = "develop-ru-central1-b"
-  zone           = "ru-central1-b"
-  network_id     = yandex_vpc_network.develop.id
-  v4_cidr_blocks = ["10.0.2.0/24"]
-}
+# data "yandex_vpc_subnet" "subnet_a" {
+#   yandex_vpc_subnet = module.vpc_dev.subnet_id
+# }
 
-
-module "test-vm" {
+module "marketing_vm" {
   source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
-  env_name       = "develop" 
-  network_id     = yandex_vpc_network.develop.id
-  subnet_zones   = ["ru-central1-a","ru-central1-b"]
-  subnet_ids     = [yandex_vpc_subnet.develop_a.id,yandex_vpc_subnet.develop_b.id]
-  instance_name  = "webs"
-  instance_count = 2
-  image_family   = "ubuntu-2004-lts"
+  env_name       = var.marketing_vm_module.env_name 
+  network_id     = module.vpc_dev.network_id
+  subnet_zones   = var.marketing_vm_module.subnet_zones
+  subnet_ids     = [module.vpc_dev.subnet_id]
+  instance_name  = var.marketing_vm_module.instance_name
+  instance_count = var.marketing_vm_module.instance_count
+  image_family   = var.marketing_vm_module.image_family
   public_ip      = true
 
   labels = { 
-    owner= "i.ivanov",
-    project = "accounting"
+    owner= var.marketing_vm_module.labels[0],
+    project = var.marketing_vm_module.labels[1]
      }
 
   metadata = {
@@ -42,16 +51,21 @@ module "test-vm" {
 
 }
 
-module "example-vm" {
+module "analytics_vm" {
   source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
-  env_name       = "stage"
-  network_id     = yandex_vpc_network.develop.id
-  subnet_zones   = ["ru-central1-a"]
-  subnet_ids     = [yandex_vpc_subnet.develop_a.id]
-  instance_name  = "web-stage"
-  instance_count = 1
-  image_family   = "ubuntu-2004-lts"
+  env_name       = var.analytics_vm_module.env_name
+  network_id     = module.vpc_dev.network_id
+  subnet_zones   = var.analytics_vm_module.subnet_zones
+  subnet_ids     = [module.vpc_dev.subnet_id]
+  instance_name  = var.analytics_vm_module.instance_name
+  instance_count = var.analytics_vm_module.instance_count
+  image_family   = var.analytics_vm_module.image_family
   public_ip      = true
+
+  labels = { 
+    owner= var.analytics_vm_module.labels[0],
+    project = var.analytics_vm_module.labels[1]
+     }
 
   metadata = {
     user-data          = data.template_file.cloudinit.rendered #Для демонстрации №3
@@ -63,5 +77,11 @@ module "example-vm" {
 #Пример передачи cloud-config в ВМ для демонстрации №3
 data "template_file" "cloudinit" {
   template = file("./cloud-init.yml")
+  
+  vars = {
+    username            = var.username
+    ssh_public_key      = file(var.public_key)
+    packages            = var.packages
+  }
 }
 
